@@ -120,8 +120,9 @@ jobs:
           mkdir -p "$staging" "$RUNNER_TEMP/dist"
           cp "target/$TARGET/release/$executable" "$staging/"
           if [[ "$OS" == macos ]]; then
-            otool -L "$staging/$executable"
-            if otool -L "$staging/$executable" | tail -n +2 | grep -Ev '^[[:space:]]+(/usr/lib/|/System/)'; then
+            libraries="$(otool -L "$staging/$executable")"
+            echo "$libraries"
+            if tail -n +2 <<< "$libraries" | grep -Ev '^[[:space:]]+(/usr/lib/|/System/)'; then
               echo "::error::$executable links a library outside macOS itself, which most Macs lack."
               exit 1
             fi
