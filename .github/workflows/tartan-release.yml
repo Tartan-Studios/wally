@@ -82,6 +82,7 @@ jobs:
           - { os: linux, arch: x86_64, runner: ubuntu-24.04, target: x86_64-unknown-linux-gnu }
           - { os: linux, arch: aarch64, runner: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
           - { os: macos, arch: aarch64, runner: macos-15, target: aarch64-apple-darwin }
+          - { os: macos, arch: x86_64, runner: macos-15-intel, target: x86_64-apple-darwin }
           - { os: windows, arch: x86_64, runner: windows-2022, target: x86_64-pc-windows-msvc }
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
@@ -103,6 +104,8 @@ jobs:
           rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal --target "$TARGET"
           if [[ "$OS" == macos ]]; then
             export OPENSSL_STATIC=1
+            OPENSSL_DIR="$(brew --prefix openssl@3)"
+            export OPENSSL_DIR
           fi
           cargo "+$RUST_TOOLCHAIN" build --release --locked --package "$PACKAGE" --bin "$TOOL" --target "$TARGET"
 
@@ -175,6 +178,6 @@ jobs:
             sha256sum "${zip#./}" > "$zip.sha256"
           done
           notes="Upstream $TOOL $TAG, commit $COMMIT, unchanged, built with Rust $RUST_TOOLCHAIN by"
-          notes+=" .github/workflows/tartan-release.yml at $WORKFLOW_COMMIT for Linux arm64 and x86_64, macOS arm64"
-          notes+=" and Windows x86_64."
+          notes+=" .github/workflows/tartan-release.yml at $WORKFLOW_COMMIT for Linux arm64 and x86_64, macOS arm64 and"
+          notes+=" x86_64, and Windows x86_64."
           gh release create "$TAG" ./* --repo "$REPOSITORY" --verify-tag --title "$TOOL $VERSION" --notes "$notes"
