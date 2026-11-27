@@ -1,7 +1,7 @@
 # Tartan Studios' wally releases
 
 This fork publishes upstream's own release tags, unchanged, for every
-platform Tartan's machines and Rokit install on: Linux arm64 and x86_64, macOS arm64 and Windows x86_64. Upstream
+platform Tartan's machines and Rokit install on: Linux arm64 and x86_64, macOS arm64 and x86_64, and Windows x86_64. Upstream
 publishes no Linux arm64 build, which Tartan's Graviton CI machines need
 (TAR-2656).
 
